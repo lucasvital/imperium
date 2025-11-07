@@ -1,66 +1,111 @@
-# IMPERIUM
+# Fincheck
 
-<p align="center">
-  Imperium is a personal finance control application. Create Bank Accounts, Transactions and Categories to manage your income and expenses.
-  I MADE SOME CHANGES LIKE S3 BUCKET FOR CATEGORY IMAGE UPLOAD AND CATEGORIES CRUD. ALSO MADE DARK MODE AND TRANSLATION FOR EN-US AND PT-BR.
-  <img src="https://i.imgur.com/STaFeCm.png" alt="Presentation" />
-</p>
+Aplicação completa para controle financeiro com back-end em NestJS e front-end em React/Vite. Este guia explica como preparar o ambiente, configurar variáveis e subir todos os serviços localmente.
 
-## Technologies used
+## Pré-requisitos
 
-<img src="https://skillicons.dev/icons?i=html,css,javascript,typescript,docker,git,prisma,nodejs,nestjs,react,vite,tailwindcss" width="415px" alt="Technologies" />
+- Node.js 18+ e npm (ou yarn/pnpm, se preferir)
+- Docker Engine e Docker Desktop instalados e em execução
+- Git (apenas se for clonar a partir de outro repositório)
 
-The design is available on [Figma](https://www.figma.com/file/RRBEBWgyQZbEYPQhzOc1OQ/Fincheck).
+## Banco de dados PostgreSQL via Docker
 
-## Running the app (Back End)
+1. Baixe a imagem oficial (caso ainda não tenha):
+   ```bash
+   docker pull postgres:16
+   ```
+2. Crie um volume para manter os dados entre reinicializações (opcional, porém recomendado):
+   ```bash
+   docker volume create fincheck-postgres-data
+   ```
+3. Suba o contêiner com usuário, senha e banco já configurados:
+   ```bash
+   docker run --name fincheck-postgres \
+     -e POSTGRES_USER=fincheck \
+     -e POSTGRES_PASSWORD=fincheck \
+     -e POSTGRES_DB=fincheck \
+     -p 5432:5432 \
+     -v fincheck-postgres-data:/var/lib/postgresql/data \
+     -d postgres:16
+   ```
+4. Confirme que o contêiner está saudável:
+   ```bash
+   docker ps
+   docker logs -f fincheck-postgres   # opcional, para acompanhar a inicialização
+   ```
 
-- First, clone the repo.
+> Para encerrar ou reiniciar o banco: `docker stop fincheck-postgres` e `docker start fincheck-postgres`.
 
-```bash
-git clone https://github.com/ItaloCovas/fincheck.git
-```
+## Configuração do Back-end (`api`)
 
-- Let's setup our API, first enter in /api folder.
-- Install the dependencies (I used yarn but you can use whatever you want, just make the changes)
+1. Entre na pasta do back-end:
+   ```bash
+   cd api
+   ```
+2. Copie o arquivo de exemplo e ajuste as variáveis:
+   ```bash
+   copy .env.example .env        # Windows
+   # ou
+   cp .env.example .env          # Linux/macOS
+   ```
+   Preencha o arquivo `.env` com os valores desejados. Valores mínimos sugeridos:
+   ```
+   DATABASE_URL="postgresql://fincheck:fincheck@localhost:5432/fincheck?schema=public"
+   JWT_SECRET="uma_chave_segura_qualquer"
+   ```
+3. Instale as dependências:
+   ```bash
+   npm install
+   # ou
+   yarn
+   ```
+4. Execute as migrações (gera tabelas no banco já criado):
+   ```bash
+   npx prisma migrate dev
+   ```
+5. Suba a API em modo desenvolvimento:
+   ```bash
+   npm run start:dev
+   # ou
+   yarn start:dev
+   ```
+   A API ficará disponível em `http://localhost:3001` (ajuste conforme configurar o `PORT` no projeto, se aplicável).
 
-```bash
-yarn
-```
+## Configuração do Front-end (`client`)
 
-- Fill the .env variables (In .env.example you can see them)
+1. Em outro terminal, acesse a pasta do front:
+   ```bash
+   cd client
+   ```
+2. Copie o arquivo `.env.example` para `.env` e ajuste a URL da API, caso necessário:
+   ```
+   VITE_API_URL=http://localhost:3001
+   ```
+3. Instale as dependências:
+   ```bash
+   npm install
+   # ou
+   yarn
+   ```
+4. Rode o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   # ou
+   yarn dev
+   ```
+   O front-end ficará disponível em `http://localhost:5173` (porta padrão do Vite).
 
-- Run PostgreSQL with Docker
+## Fluxo de desenvolvimento recomendado
 
-The database can be launched locally with a [Docker Container](https://www.docker.com/resources/what-container/).
+- Inicie o contêiner do PostgreSQL (`docker start fincheck-postgres`).
+- Suba a API (`npm run start:dev` dentro de `api`).
+- Suba o front (`npm run dev` dentro de `client`).
+- Verifique logs dos serviços sempre que precisar (`docker logs`, terminal da API ou do front).
 
-Check the official documentation to install the [Docker Engine](https://docs.docker.com/engine/install/ubuntu/).
+## Dicas adicionais
 
-```bash
-docker run --name pg -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -p 5432:5432 -d postgres
-```
+- Para listar migrações e checar o estado do Prisma, use `npx prisma migrate status`.
+- Caso altere o schema Prisma, rode `npx prisma migrate dev` novamente para aplicar as mudanças.
+- Para parar rapidamente todos os serviços: interrompa os processos `start:dev`/`dev` com `Ctrl+C` e pare o contêiner `docker stop fincheck-postgres`.
 
-- Run migrations
-
-```bash
-npx prisma migrate dev
-```
-
-
-## Running the app (Front End)
-
-- Make sure you are inside /client folder
-- Install dependencies
-
-```bash
-yarn
-```
-
-- Fill the .env variables (In .env.example you can see them)
-
-## Contact me
-
-I made many changes (Categories CRUD with S3 Bucket Image, Dark Mode, Translation) in the original project and I'm still developing some features.
-
-If you have any questions or suggestions, feel free to DM me :)
-
-**LinkedIn**: https://www.linkedin.com/in/italocovas/
+Com isso, o ambiente estará pronto para desenvolver e testar o Fincheck localmente. Bons testes! :)
