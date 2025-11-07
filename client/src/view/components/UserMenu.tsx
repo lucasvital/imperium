@@ -1,0 +1,49 @@
+import { ExitIcon, PersonIcon } from '@radix-ui/react-icons';
+import { DropdownMenu } from './DropdownMenu';
+import { useAuth } from '../../shared/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
+export function UserMenu() {
+  const { signOut, user } = useAuth();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const isAdmin = user?.role === 'ADMIN';
+
+  return (
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger>
+        <div className="rounded-full cursor-pointer bg-teal-50 w-12 h-12 flex items-center justify-center border border-teal-100">
+          <span className="text-sm tracking-[-0.5px] text-teal-900 font-medium">
+            {user?.name.split(' ')[1]
+              ? `${user?.name.split(' ')[0].charAt(0).toUpperCase()}${user?.name
+                  .split(' ')[1]
+                  .charAt(0)
+                  .toUpperCase()}`
+              : `${user?.name.split(' ')[0].slice(0, 2).toUpperCase()}`}
+          </span>
+        </div>
+      </DropdownMenu.Trigger>
+
+      <DropdownMenu.Content className="w-48 dark:bg-gray-700">
+        {isAdmin && (
+          <DropdownMenu.Item
+            className="flex items-center justify-between dark:text-white dark:hover:!bg-gray-600"
+            onSelect={() => navigate('/admin')}
+          >
+            Área Administrativa
+            <PersonIcon className="w-4 h-4" />
+          </DropdownMenu.Item>
+        )}
+        <DropdownMenu.Item
+          className="flex items-center justify-between dark:text-white dark:hover:!bg-gray-600"
+          onSelect={() => signOut()}
+        >
+          {t('logoutText')}
+          <ExitIcon className="w-4 h-4" />
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
+  );
+}

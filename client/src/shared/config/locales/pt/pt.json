@@ -1,0 +1,251 @@
+{
+  "translation": {
+    "expired": "Sua sessão expirou!",
+    "currency": "R$",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "formatCurrency": {
+      "country": "pt-br",
+      "currency": "BRL"
+    },
+    "fab": {
+      "newCategory": "Nova Categoria",
+      "newExpense": "Nova Despesa",
+      "newIncome": "Nova Receita",
+      "newTransfer": "Nova Transferência",
+      "newAccount": "Nova Conta",
+      "newBudget": "Novo Orçamento",
+      "newRecurringTransaction": "Nova Transação Recorrente"
+    },
+    "welcomeText": "Gerencie suas finanças pessoais de uma forma simples com o Imperium, e o melhor, totalmente de graça!",
+    "logoutText": "Sair",
+    "login": {
+      "loginTitle": "Entre em sua conta",
+      "loginSuggestion": "Novo por aqui?",
+      "createAccountSuggestion": "Crie uma conta",
+      "loginButton": "Entrar"
+    },
+    "register": {
+      "registerTitle": "Crie sua conta",
+      "registerSuggestion": "Já possui uma conta?",
+      "createAccountSuggestion": "Fazer login",
+      "registerButton": "Criar conta"
+    },
+    "accounts": {
+      "totalBalance": "Saldo total",
+      "initialBalance": "Saldo inicial",
+      "myAccounts": "Minhas contas",
+      "newAccount": "Cadastre uma nova conta",
+      "currentBalance": "Saldo atual",
+      "editAccountTitle": "Editar Conta",
+      "deleteAccountTitle": "Tem certeza de que deseja excluir sua conta?",
+      "deleteAccountDescription": "Ao excluir a conta, também serão excluídos todos os registros de receita e despesa da relacionados a mesma.",
+      "confirmDelete": "Sim, desejo excluir",
+      "cancelDelete": "Cancelar",
+      "newAccountTitle": "Nova Conta",
+      "create": "Criar",
+      "types": {
+        "CHECKING": "Conta Corrente",
+        "INVESTMENT": "Investimentos",
+        "CASH": "Dinheiro Físico"
+      }
+    },
+    "transactions": {
+      "empty": "Não encontramos nenhuma transação!",
+      "emptyDescription": "Comece registrando suas receitas e despesas para ter um controle completo das suas finanças.",
+      "editIncome": "Editar Receita",
+      "editExpense": "Editar Despesa",
+      "create": "Criar",
+      "deleteIncomeTitle": "Tem certeza de que deseja excluir esta receita?",
+      "deleteExpenseTitle": "Tem certeza de que deseja excluir esta despesa?",
+      "filtersModal": {
+        "title": "Filtros",
+        "account": "Conta",
+        "year": "Ano",
+        "name": "Nome",
+        "namePlaceholder": "Buscar por nome da transação",
+        "valueRange": "Faixa de Valor",
+        "minValue": "Valor Mínimo",
+        "maxValue": "Valor Máximo",
+        "categories": "Categorias",
+        "customPeriod": "Período Personalizado",
+        "startDate": "Data Inicial",
+        "endDate": "Data Final",
+        "submit": "Aplicar Filtros",
+        "clear": "Limpar"
+      },
+      "dropdown": {
+        "transactions": "Transações",
+        "expenses": "Despesas",
+        "incomes": "Receitas",
+        "transfers": "Transferências"
+      },
+      "installments": {
+        "totalLabel": "Valor total da compra",
+        "quantity": "Quantidade de parcelas",
+        "firstDueDate": "Data da primeira parcela",
+        "badge": "{{current}} de {{total}} parcelas",
+        "deleteTitle": "Deseja excluir todas as parcelas desta compra?",
+        "editInfo": "Este lançamento faz parte de uma compra parcelada. Para ajustar valores, exclua e cadastre novamente. Excluir removerá todas as parcelas geradas.",
+        "editNotAllowed": "Compras parceladas não podem ser editadas individualmente."
+      }
+    },
+      "categories": {
+        "newCategoryTitle": "Nova Categoria",
+        "deleteCategoryTitle": "Tem certeza de que deseja excluir esta categoria?",
+        "editCategoryTitle": "Editar Categoria",
+        "createCategory": "Criar"
+      },
+      "budgets": {
+        "newBudgetTitle": "Novo Orçamento",
+        "editBudgetTitle": "Editar Orçamento",
+        "deleteBudgetTitle": "Tem certeza de que deseja excluir este orçamento?",
+        "createBudget": "Criar",
+        "myBudgets": "Meus Orçamentos",
+        "noBudgets": "Nenhum orçamento cadastrado para este mês.",
+        "noBudgetsDescription": "Crie seu primeiro orçamento para começar a controlar seus gastos e receitas de forma eficiente.",
+        "createFirstBudget": "Criar Primeiro Orçamento",
+        "limit": "Limite",
+        "spent": "Gasto",
+        "remaining": "Restante",
+        "received": "Recebido",
+        "aboveGoal": "Acima da meta",
+        "generalBudget": "Orçamento Geral",
+        "categoryBudget": "Orçamento por Categoria",
+        "overBudget": "Orçamento ultrapassado!",
+        "nearLimit": "Próximo do limite",
+        "goalReached": "Meta atingida!",
+        "nearGoal": "Próximo da meta"
+      },
+    "placeholders": {
+      "password": "Senha",
+      "name": "Nome",
+      "category": "Categoria",
+      "payWith": "Pagar com",
+      "receiveWith": "Receber com",
+      "fromAccount": "De (conta origem)",
+      "toAccount": "Para (conta destino)",
+      "accountName": "Nome da conta",
+      "date": "Data",
+      "type": "Tipo",
+      "color": "Cor",
+      "incomeName": "Nome da receita",
+      "expenseName": "Nome da despesa",
+      "transferName": "Nome da transferência",
+      "incomeValue": "Valor da receita",
+      "expenseValue": "Valor da despesa",
+      "transferValue": "Valor da transferência",
+      "categoryName": "Nome da categoria",
+      "budgetLimit": "Limite do orçamento",
+      "month": "Mês",
+      "year": "Ano",
+      "selectCategory": "Selecione uma categoria (opcional)",
+      "optional": "opcional"
+    },
+    "schemaMessages": {},
+    "toastMessages": {
+      "register": {
+        "userCreated": "Usuário criado com sucesso!",
+        "userCreatedError": "Ocorreu um erro ao criar a sua conta."
+      },
+      "login": {
+        "loginSuccess": "Usuário autenticado com sucesso!",
+        "loginError": "Credenciais inválidas."
+      },
+      "accounts": {
+        "createAccountSuccess": "Conta cadastrada com sucesso!",
+        "createAccountError": "Erro ao cadastrar a conta.",
+        "editAccountSuccess": "Conta editada com sucesso!",
+        "editAccountError": "Erro ao editar a conta.",
+        "removeAccountSuccess": "Conta deletada com sucesso!",
+        "removeAccountError": "Erro ao deletar a conta."
+      },
+      "transactions": {
+        "createIncomeSuccess": "Receita cadastrada com sucesso!",
+        "createExpenseSuccess": "Despesa cadastrada com sucesso!",
+        "createTransferSuccess": "Transferência cadastrada com sucesso!",
+        "createIncomeError": "Error ao cadastrar receita.",
+        "createExpenseError": "Error ao cadastrar despesa.",
+        "createTransferError": "Erro ao cadastrar transferência.",
+        "editIncomeSuccess": "Receita editada com sucesso!",
+        "editExpenseSuccess": "Despesa editada com sucesso!",
+        "editIncomeError": "Erro ao salvar receita.",
+        "editExpenseError": "Erro ao salvar despesa.",
+        "removeIncomeSuccess": "Receita deletada com sucesso!",
+        "removeExpenseSuccess": "Despesa deletada com sucesso!",
+        "removeIncomeError": "Erro ao deletar receita.",
+        "removeExpenseError": "Erro ao deletar despesa."
+      },
+      "categories": {
+        "createCategorySuccess": "Categoria criada com sucesso!",
+        "createCategoryError": "Erro ao criar categoria.",
+        "deleteCategorySuccess": "Categoria deletada com sucesso!",
+        "deleteCategoryError": "Erro ao deletar categoria.",
+        "editCategorySuccess": "Categoria editada com sucesso!",
+        "editCategoryError": "Erro ao editar categoria."
+      },
+      "budgets": {
+        "createBudgetSuccess": "Orçamento criado com sucesso!",
+        "createBudgetError": "Erro ao criar orçamento.",
+        "updateBudgetSuccess": "Orçamento atualizado com sucesso!",
+        "updateBudgetError": "Erro ao atualizar orçamento.",
+        "removeBudgetSuccess": "Orçamento deletado com sucesso!",
+        "removeBudgetError": "Erro ao deletar orçamento."
+      },
+      "recurringTransactions": {
+        "createSuccess": "Transação recorrente criada com sucesso!",
+        "createError": "Erro ao criar transação recorrente.",
+        "updateSuccess": "Transação recorrente atualizada com sucesso!",
+        "updateError": "Erro ao atualizar transação recorrente.",
+        "removeSuccess": "Transação recorrente deletada com sucesso!",
+        "removeError": "Erro ao deletar transação recorrente.",
+        "toggleError": "Erro ao alterar status da transação recorrente."
+      }
+    },
+    "notifications": {
+      "title": "Notificações",
+      "empty": "Nenhuma notificação",
+      "markAllAsRead": "Marcar todas como lidas",
+      "delete": "Excluir"
+    },
+    "recurringTransactions": {
+      "newRecurringTransaction": "Nova Transação Recorrente",
+      "myRecurringTransactions": "Minhas Transações Recorrentes",
+      "noRecurringTransactions": "Nenhuma transação recorrente cadastrada.",
+      "noRecurringTransactionsDescription": "Configure transações recorrentes para automatizar o registro de receitas e despesas periódicas.",
+      "deleteRecurringTransactionTitle": "Tem certeza de que deseja excluir esta transação recorrente?",
+      "frequency": "Frequência",
+      "frequencies": {
+        "DAILY": "Diária",
+        "WEEKLY": "Semanal",
+        "MONTHLY": "Mensal",
+        "YEARLY": "Anual"
+      },
+      "startDate": "Data de início",
+      "endDate": "Data de término",
+      "nextDueDate": "Próxima data de vencimento",
+      "value": "Valor",
+      "account": "Conta",
+      "create": "Criar",
+      "pause": "Pausar",
+      "resume": "Retomar",
+      "overdue": "Vencida",
+      "paused": "Pausada"
+    },
+    "reports": {
+      "title": "Relatórios e Gráficos",
+      "monthly": "Mensal",
+      "yearly": "Anual",
+      "expensesByCategory": "Despesas por Categoria",
+      "incomeByCategory": "Receitas por Categoria",
+      "monthlyTrend": "Tendência Mensal",
+      "yearlySummary": "Resumo Anual",
+      "totalIncome": "Total de Receitas",
+      "totalExpenses": "Total de Despesas",
+      "balance": "Saldo",
+      "incomeLabel": "Receitas",
+      "expensesLabel": "Despesas",
+      "noData": "Nenhum dado disponível para este período."
+    }
+  }
+}

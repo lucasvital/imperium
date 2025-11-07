@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+
+  @@map("user_role")
+}
+
+enum MentorPermission {
+  READ_ONLY
+  FULL_ACCESS
+
+  @@map("mentor_permission")
+}
+
+enum NotificationType {
+  BUDGET_NEAR_LIMIT
+  BUDGET_EXCEEDED
+  BUDGET_GOAL_REACHED
+
+  @@map("notification_type")
+}
+
+model User {
+  id                String           @id @default(uuid()) @db.Uuid
+  name              String
+  email             String           @unique
+  password          String
+  role              UserRole         @default(USER)
+  mentorId          String?          @map("mentor_id") @db.Uuid
+  mentorPermission  MentorPermission? @map("mentor_permission")
+
+  mentor       User?           @relation("MentorMentee", fields: [mentorId], references: [id], onDelete: SetNull)
+  mentorados   User[]          @relation("MentorMentee")
+  bankAccounts BankAccount[]
+  categories   Category[]
+  transactions Transaction[]
+  budgets      Budget[]
+  notifications Notification[]
+  recurringTransactions RecurringTransaction[]
+
+  @@map("users")
+}
+
+enum BankAccountType {
+  CHECKING
+  INVESTMENT
+  CASH
+
+  @@map("bank_account_type")
+}
+
+model BankAccount {
+  id             String          @id @default(uuid()) @db.Uuid
+  userId         String          @map("user_id") @db.Uuid
+  name           String
+  initialBalance Float           @map("initial_balance")
+  color          String
+  type           BankAccountType
+
+  user                User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions        Transaction[]
+  recurringTransactions RecurringTransaction[]
+
+  @@map("bank_accounts")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+
+  @@map("transaction_type")
+}
+
+enum RecurringFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+
+  @@map("recurring_frequency")
+}
+
+model Category {
+  id           String          @id @default(uuid()) @db.Uuid
+  userId       String          @map("user_id") @db.Uuid
+  name         String
+  icon         String
+  iconUrl      String?
+  iconKey      String?
+  type         TransactionType
+  transactions Transaction[]
+
+  user                User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  budgets             Budget[]
+  recurringTransactions RecurringTransaction[]
+
+  @@unique([name, userId])
+  @@map("categories")
+}
+
+model Transaction {
+  id                  String          @id @default(uuid()) @db.Uuid
+  userId              String          @map("user_id") @db.Uuid
+  bankAccountId       String          @map("bank_account_id") @db.Uuid
+  categoryId          String?         @map("category_id") @db.Uuid
+  name                String
+  value               Float
+  date                DateTime
+  type                TransactionType
+  relatedTransactionId String?        @map("related_transaction_id") @db.Uuid
+  installmentGroupId  String?         @map("installment_group_id") @db.Uuid
+  installmentNumber   Int?            @map("installment_number")
+  totalInstallments   Int?            @map("total_installments")
+  installmentTotalValue Float?        @map("installment_total_value")
+
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankAccount         BankAccount     @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  category            Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  relatedTransaction  Transaction?    @relation("TransactionTransfer", fields: [relatedTransactionId], references: [id], onDelete: SetNull)
+  relatedTransactions Transaction[]   @relation("TransactionTransfer")
+
+  @@map("transactions")
+}
+
+model Budget {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  categoryId String?   @map("category_id") @db.Uuid
+  month      Int
+  year       Int
+  limit      Float
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category      Category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, categoryId, month, year])
+  @@map("budgets")
+}
+
+model Notification {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @map("user_id") @db.Uuid
+  budgetId  String?          @map("budget_id") @db.Uuid
+  type      NotificationType
+  message   String
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  budget Budget? @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model RecurringTransaction {
+  id            String             @id @default(uuid()) @db.Uuid
+  userId        String             @map("user_id") @db.Uuid
+  name          String
+  value         Float
+  type          TransactionType
+  categoryId    String?            @map("category_id") @db.Uuid
+  bankAccountId String             @map("bank_account_id") @db.Uuid
+  frequency     RecurringFrequency
+  startDate     DateTime           @map("start_date")
+  endDate       DateTime?          @map("end_date")
+  nextDueDate   DateTime           @map("next_due_date")
+  isActive      Boolean            @default(true) @map("is_active")
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  bankAccount BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("recurring_transactions")
+}

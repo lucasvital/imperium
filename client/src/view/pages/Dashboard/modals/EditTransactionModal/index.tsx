@@ -1,0 +1,228 @@
+import { Controller } from 'react-hook-form';
+import { DatePickerInput } from '../../../../components/DatePickerInput';
+import { Input } from '../../../../components/Input';
+import { InputCurrency } from '../../../../components/InputCurrency';
+import { Modal } from '../../../../components/Modal';
+import { Select } from '../../../../components/Select';
+import { useEditTransactionModalController } from './useEditTransactionModalController';
+import { Button } from '../../../../components/Button';
+import { Transaction } from '../../../../../shared/entities/transaction';
+import { DeleteModal } from '../../../../components/DeleteModal';
+import { TrashIcon } from '../../../../components/icons/TrashIcon';
+import { EditCategoryModal } from '../EditCategoryModal';
+
+interface EditTransactionModalProps {
+  isModalOpen: boolean;
+
+  onClose(): void;
+
+  transaction: Transaction | null;
+}
+
+export function EditTransactionModal({
+  transaction,
+  isModalOpen,
+  onClose
+}: EditTransactionModalProps) {
+  const {
+    control,
+    handleSubmit,
+    errors,
+    register,
+    categories,
+    isLoading,
+    accounts,
+    isDeleteModalOpen,
+    isLoadingRemove,
+    handleDeleteTransaction,
+    handleCloseDeleteModal,
+    handleOpenDeleteModal,
+    categoryBeingEdited,
+    isEditCategoriesModalOpen,
+    handleCloseEditCategoriesModal,
+    handleOpenEditCategoriesModal,
+    isDeleteCategoryModalOpen,
+    handleOpenDeleteCategoryModal,
+    handleCloseDeleteCategoryModal,
+    isLoadingCategoryRemove,
+    handleDeleteCategory,
+    t,
+    isInstallment
+  } = useEditTransactionModalController(transaction, onClose);
+
+  const isExpense = transaction?.type === 'EXPENSE';
+
+  if (isDeleteModalOpen) {
+    return (
+      <DeleteModal
+        t={t}
+        title={
+          isInstallment
+            ? t('transactions.installments.deleteTitle')
+            : isExpense
+            ? t('transactions.deleteExpenseTitle')
+            : t('transactions.deleteIncomeTitle')
+        }
+        isLoading={isLoadingRemove}
+        onConfirm={handleDeleteTransaction}
+        onClose={handleCloseDeleteModal}
+      />
+    );
+  }
+
+  if (isDeleteCategoryModalOpen) {
+    return (
+      <DeleteModal
+        t={t}
+        title={t('categories.deleteCategoryTitle')}
+        isLoading={isLoadingCategoryRemove}
+        onConfirm={handleDeleteCategory}
+        onClose={handleCloseDeleteCategoryModal}
+      />
+    );
+  }
+
+  if (categoryBeingEdited) {
+    return (
+      <EditCategoryModal
+        isModalOpen={isEditCategoriesModalOpen}
+        onClose={handleCloseEditCategoriesModal}
+        category={categoryBeingEdited}
+      />
+    );
+  }
+
+  return (
+    <Modal
+      title={
+        isExpense ? t('transactions.editExpense') : t('transactions.editIncome')
+      }
+      open={isModalOpen}
+      onClose={onClose}
+      rightAction={
+        <button onClick={handleOpenDeleteModal}>
+          <TrashIcon className="text-red-900 w-6 h-6" />
+        </button>
+      }
+    >
+      <form onSubmit={handleSubmit}>
+        {isInstallment && (
+          <div className="mb-4 p-3 rounded-lg bg-yellow-100 text-yellow-900 dark:bg-yellow-900/20 dark:text-yellow-200 text-sm">
+            {t('transactions.installments.editInfo')}
+          </div>
+        )}
+        <div>
+          <span className="text-gray-600 text-sm tracking-[-0.5px] dark:text-white">
+            {isExpense
+              ? t('placeholders.expenseValue')
+              : t('placeholders.incomeValue')}
+          </span>
+
+          <div className="flex items-center gap-2">
+            <span className="text-gray-600 text-lg tracking-[-0.5px] dark:text-white">
+              {t('currency')}{' '}
+            </span>
+            <div className={isInstallment ? 'pointer-events-none opacity-60' : undefined}>
+              <Controller
+                control={control}
+                name="value"
+                defaultValue="0"
+                render={({ field: { onChange, value } }) => (
+                  <InputCurrency
+                    error={errors.value?.message}
+                    onChange={isInstallment ? () => {} : onChange}
+                    value={value}
+                  />
+                )}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-4">
+          <Input
+            type="text"
+            placeholder={
+              isExpense
+                ? t('placeholders.expenseName')
+                : t('placeholders.incomeName')
+            }
+            {...register('name')}
+            disabled={isInstallment}
+            error={errors.name?.message}
+          />
+          <Controller
+            control={control}
+            name="categoryId"
+            defaultValue=""
+            render={({ field: { onChange, value } }) => (
+              <Select
+                onChange={isInstallment ? () => {} : onChange}
+                placeholder={t('placeholders.category')}
+                isCategory
+                handleOpenEditCategoriesModal={handleOpenEditCategoriesModal}
+                handleOpenRemoveCategoriesModal={handleOpenDeleteCategoryModal}
+                value={value}
+                error={errors.categoryId?.message}
+                className={isInstallment ? 'pointer-events-none opacity-60' : undefined}
+                options={categories.map((category) => ({
+                  value: category.id,
+                  label: category.name,
+                  category: category
+                }))}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="bankAccountId"
+            defaultValue=""
+            render={({ field: { onChange, value } }) => (
+              <Select
+                onChange={isInstallment ? () => {} : onChange}
+                value={value}
+                error={errors.bankAccountId?.message}
+                placeholder={
+                  isExpense
+                    ? t('placeholders.payWith')
+                    : t('placeholders.receiveWith')
+                }
+                className={isInstallment ? 'pointer-events-none opacity-60' : undefined}
+                options={accounts.map((account) => ({
+                  value: account.id,
+                  label: account.name
+                }))}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="date"
+            defaultValue={new Date()}
+            render={({ field: { onChange, value } }) => (
+              <DatePickerInput
+                t={t}
+                value={value}
+                onChange={(date) =>
+                  isInstallment
+                    ? undefined
+                    : onChange(date ?? value ?? new Date())
+                }
+                error={errors.date?.message}
+                className={isInstallment ? 'pointer-events-none opacity-60' : undefined}
+              />
+            )}
+          />
+        </div>
+        <Button
+          type="submit"
+          className="w-full mt-6"
+          isLoading={isLoading}
+          disabled={isInstallment}
+        >
+          {t('save')}
+        </Button>
+      </form>
+    </Modal>
+  );
+}
