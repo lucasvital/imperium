@@ -1,6 +1,4 @@
-# Fincheck
 
-Aplicação completa para controle financeiro com back-end em NestJS e front-end em React/Vite. Este guia explica como preparar o ambiente, configurar variáveis e subir todos os serviços localmente.
 
 ## Pré-requisitos
 
