@@ -1,4 +1,6 @@
+# Imperium
 
+Aplicação completa para controle financeiro com back-end em NestJS e front-end em React/Vite. Este guia explica como preparar o ambiente, configurar variáveis e subir todos os serviços localmente.
 
 ## Pré-requisitos
 
@@ -14,25 +16,25 @@
    ```
 2. Crie um volume para manter os dados entre reinicializações (opcional, porém recomendado):
    ```bash
-   docker volume create fincheck-postgres-data
+   docker volume create imperium-postgres-data
    ```
 3. Suba o contêiner com usuário, senha e banco já configurados:
    ```bash
-   docker run --name fincheck-postgres \
-     -e POSTGRES_USER=fincheck \
-     -e POSTGRES_PASSWORD=fincheck \
-     -e POSTGRES_DB=fincheck \
+   docker run --name imperium-postgres \
+     -e POSTGRES_USER=imperium \
+     -e POSTGRES_PASSWORD=imperium \
+     -e POSTGRES_DB=imperium \
      -p 5432:5432 \
-     -v fincheck-postgres-data:/var/lib/postgresql/data \
+     -v imperium-postgres-data:/var/lib/postgresql/data \
      -d postgres:16
    ```
 4. Confirme que o contêiner está saudável:
    ```bash
    docker ps
-   docker logs -f fincheck-postgres   # opcional, para acompanhar a inicialização
+   docker logs -f imperium-postgres   # opcional, para acompanhar a inicialização
    ```
 
-> Para encerrar ou reiniciar o banco: `docker stop fincheck-postgres` e `docker start fincheck-postgres`.
+> Para encerrar ou reiniciar o banco: `docker stop imperium-postgres` e `docker start imperium-postgres`.
 
 ## Configuração do Back-end (`api`)
 
@@ -48,7 +50,7 @@
    ```
    Preencha o arquivo `.env` com os valores desejados. Valores mínimos sugeridos:
    ```
-   DATABASE_URL="postgresql://fincheck:fincheck@localhost:5432/fincheck?schema=public"
+   DATABASE_URL="postgresql://imperium:imperium@localhost:5432/imperium?schema=public"
    JWT_SECRET="uma_chave_segura_qualquer"
    ```
 3. Instale as dependências:
@@ -95,7 +97,7 @@
 
 ## Fluxo de desenvolvimento recomendado
 
-- Inicie o contêiner do PostgreSQL (`docker start fincheck-postgres`).
+- Inicie o contêiner do PostgreSQL (`docker start imperium-postgres`).
 - Suba a API (`npm run start:dev` dentro de `api`).
 - Suba o front (`npm run dev` dentro de `client`).
 - Verifique logs dos serviços sempre que precisar (`docker logs`, terminal da API ou do front).
@@ -104,6 +106,6 @@
 
 - Para listar migrações e checar o estado do Prisma, use `npx prisma migrate status`.
 - Caso altere o schema Prisma, rode `npx prisma migrate dev` novamente para aplicar as mudanças.
-- Para parar rapidamente todos os serviços: interrompa os processos `start:dev`/`dev` com `Ctrl+C` e pare o contêiner `docker stop fincheck-postgres`.
+- Para parar rapidamente todos os serviços: interrompa os processos `start:dev`/`dev` com `Ctrl+C` e pare o contêiner `docker stop imperium-postgres`.
 
-Com isso, o ambiente estará pronto para desenvolver e testar o Fincheck localmente. Bons testes! :)
+Com isso, o ambiente estará pronto para desenvolver e testar o Imperium localmente. Bons testes! :)
