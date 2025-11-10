@@ -7,15 +7,23 @@ import { BR_MONTHS, EN_MONTHS } from '../../../../../shared/config/constants/mon
 import { useTheme } from '../../../../../shared/hooks/useTheme';
 
 export function MonthlyTrendChart() {
-  const { t, currentLanguage } = useDashboard();
+  const { t, currentLanguage, selectedMentoradoId } = useDashboard();
   const { theme } = useTheme();
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   
   const isDark = theme === 'dark';
 
-  const { data: incomeData = [], isLoading: isLoadingIncome } = useMonthlyTrend(year, 'INCOME');
-  const { data: expenseData = [], isLoading: isLoadingExpenses } = useMonthlyTrend(year, 'EXPENSE');
+  const { data: incomeData = [], isLoading: isLoadingIncome } = useMonthlyTrend({
+    year,
+    type: 'INCOME',
+    targetUserId: selectedMentoradoId || undefined,
+  });
+  const { data: expenseData = [], isLoading: isLoadingExpenses } = useMonthlyTrend({
+    year,
+    type: 'EXPENSE',
+    targetUserId: selectedMentoradoId || undefined,
+  });
 
   const isLoading = isLoadingIncome || isLoadingExpenses;
   const MONTHS = currentLanguage === 'pt' ? BR_MONTHS : EN_MONTHS;

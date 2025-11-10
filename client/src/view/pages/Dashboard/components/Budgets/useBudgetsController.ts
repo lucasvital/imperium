@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useBudgets } from '../../../../../shared/hooks/useBudgets';
+import { useDashboard } from '../../DashboardContext/useDashboard';
 
 export function useBudgetsController() {
   const currentDate = new Date();
@@ -8,7 +9,13 @@ export function useBudgetsController() {
     year: currentDate.getFullYear(),
   });
 
-  const { budgets, isLoading } = useBudgets(filters.month, filters.year);
+  const { selectedMentoradoId } = useDashboard();
+
+  const { budgets, isLoading } = useBudgets(
+    filters.month,
+    filters.year,
+    selectedMentoradoId || undefined,
+  );
 
   return {
     budgets,

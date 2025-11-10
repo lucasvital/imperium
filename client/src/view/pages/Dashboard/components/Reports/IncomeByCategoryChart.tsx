@@ -19,7 +19,7 @@ const COLORS = [
 ];
 
 export function IncomeByCategoryChart() {
-  const { t } = useDashboard();
+  const { t, selectedMentoradoId } = useDashboard();
   const { theme } = useTheme();
   const currentDate = new Date();
   const month = currentDate.getMonth();
@@ -27,7 +27,11 @@ export function IncomeByCategoryChart() {
   
   const isDark = theme === 'dark';
 
-  const { data = [], isLoading } = useIncomeByCategory(month, year);
+  const { data = [], isLoading } = useIncomeByCategory({
+    month,
+    year,
+    targetUserId: selectedMentoradoId || undefined,
+  });
 
   if (isLoading) {
     return (

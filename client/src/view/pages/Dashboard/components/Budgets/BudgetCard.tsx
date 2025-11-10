@@ -10,6 +10,7 @@ import { DeleteModal } from '../../../../components/DeleteModal';
 import { InputCurrency } from '../../../../components/InputCurrency';
 import { Modal } from '../../../../components/Modal';
 import { currencyStringToNumber } from '../../../../../shared/utils/currencyStringToNumber';
+import { useDashboard } from '../../DashboardContext/useDashboard';
 
 interface BudgetCardProps {
   budget: Budget;
@@ -17,9 +18,12 @@ interface BudgetCardProps {
 
 export function BudgetCard({ budget }: BudgetCardProps) {
   const { t } = useTranslation();
+  const { selectedMentoradoId } = useDashboard();
+  const isMentorView = Boolean(selectedMentoradoId);
   const { updateBudget, removeBudget, isUpdating, isRemoving } = useBudgets(
     budget.month,
     budget.year,
+    selectedMentoradoId || undefined,
   );
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -100,20 +104,22 @@ export function BudgetCard({ budget }: BudgetCardProps) {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-teal-900 dark:hover:text-white transition-colors"
-            >
-              <Pencil1Icon className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setIsDeleteModalOpen(true)}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-            >
-              <TrashIcon className="w-4 h-4" />
-            </button>
-          </div>
+          {!isMentorView && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsEditModalOpen(true)}
+                className="p-2 text-gray-600 dark:text-gray-400 hover:text-teal-900 dark:hover:text-white transition-colors"
+              >
+                <Pencil1Icon className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setIsDeleteModalOpen(true)}
+                className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              >
+                <TrashIcon className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -212,37 +218,41 @@ export function BudgetCard({ budget }: BudgetCardProps) {
         </div>
       </div>
 
-      <DeleteModal
-        t={t}
-        title={t('budgets.deleteBudgetTitle')}
-        isLoading={isRemoving}
-        onConfirm={handleDelete}
-        onClose={() => setIsDeleteModalOpen(false)}
-        open={isDeleteModalOpen}
-      />
-
-      <Modal
-        title={t('budgets.editBudgetTitle')}
-        open={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-      >
-        <div className="mt-10">
-          <label className="text-sm text-gray-600 dark:text-gray-400 mb-2 block">
-            {t('placeholders.budgetLimit')}
-          </label>
-          <InputCurrency
-            value={editLimit}
-            onChange={(val) => setEditLimit(val || '0')}
+      {!isMentorView && (
+        <>
+          <DeleteModal
+            t={t}
+            title={t('budgets.deleteBudgetTitle')}
+            isLoading={isRemoving}
+            onConfirm={handleDelete}
+            onClose={() => setIsDeleteModalOpen(false)}
+            open={isDeleteModalOpen}
           />
-        </div>
-        <Button
-          className="w-full mt-6"
-          onClick={handleUpdate}
-          isLoading={isUpdating}
-        >
-          {t('save')}
-        </Button>
-      </Modal>
+
+          <Modal
+            title={t('budgets.editBudgetTitle')}
+            open={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+          >
+            <div className="mt-10">
+              <label className="text-sm text-gray-600 dark:text-gray-400 mb-2 block">
+                {t('placeholders.budgetLimit')}
+              </label>
+              <InputCurrency
+                value={editLimit}
+                onChange={(val) => setEditLimit(val || '0')}
+              />
+            </div>
+            <Button
+              className="w-full mt-6"
+              onClick={handleUpdate}
+              isLoading={isUpdating}
+            >
+              {t('save')}
+            </Button>
+          </Modal>
+        </>
+      )}
     </>
   );
 }

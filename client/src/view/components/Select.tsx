@@ -69,7 +69,7 @@ export function Select({
           className={cn(
             'absolute z-10 top-1/2 -translate-y-1/2 left-3 text-gray-700 pointer-events-none',
             selectedValue &&
-              'text-xs left-[13px] top-2 transition-all translate-y-0'
+              'text-xs left-[13px] top-2 transition-all translate-y-0 bg-white dark:bg-gray-800 px-1'
           )}
         >
           {placeholder}

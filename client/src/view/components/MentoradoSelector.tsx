@@ -35,6 +35,7 @@ export function MentoradoSelector({
   return (
     <div className="w-full md:w-auto">
       <Select
+        className="min-w-[220px] md:min-w-[260px]"
         placeholder="Selecione um mentorado"
         options={options}
         value={selectedMentoradoId || 'me'}

@@ -5,11 +5,14 @@ import { useDashboard } from '../../DashboardContext/useDashboard';
 import { cn } from '../../../../../shared/utils/cn';
 
 export function YearlySummaryCard() {
-  const { t } = useDashboard();
+  const { t, selectedMentoradoId } = useDashboard();
   const currentDate = new Date();
   const year = currentDate.getFullYear();
 
-  const { data, isLoading } = useYearlySummary(year);
+  const { data, isLoading } = useYearlySummary({
+    year,
+    targetUserId: selectedMentoradoId || undefined,
+  });
 
   if (isLoading) {
     return (

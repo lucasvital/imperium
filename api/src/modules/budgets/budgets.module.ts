@@ -3,9 +3,10 @@ import { BudgetsService } from './services/budgets.service';
 import { BudgetsController } from './budgets.controller';
 import { CategoriesModule } from '../categories/categories.module';
 import { ValidateBudgetOwnershipService } from './services/validate-budget-ownership.service';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [CategoriesModule],
+  imports: [CategoriesModule, UsersModule],
   controllers: [BudgetsController],
   providers: [BudgetsService, ValidateBudgetOwnershipService],
   exports: [BudgetsService],

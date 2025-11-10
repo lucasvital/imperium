@@ -1,14 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repository';
 import { TransactionType } from '../../transactions/entities/Transaction';
+import { UsersService } from '../../users/users.service';
 
 @Injectable()
 export class AnalyticsService {
   constructor(
     private readonly transactionsRepo: TransactionsRepository,
+    private readonly usersService: UsersService,
   ) {}
 
-  async getExpensesByCategory(userId: string, month: number, year: number) {
+  private async resolveEffectiveUserId(
+    requestingUserId: string,
+    targetUserId?: string,
+  ) {
+    if (!targetUserId || targetUserId === requestingUserId) {
+      return requestingUserId;
+    }
+
+    const canAccess = await this.usersService.canAccessUserData(
+      requestingUserId,
+      targetUserId,
+    );
+
+    if (!canAccess) {
+      throw new ForbiddenException(
+        'You do not have permission to access this user analytics.',
+      );
+    }
+
+    return targetUserId;
+  }
+
+  async getExpensesByCategory(
+    requestingUserId: string,
+    month: number,
+    year: number,
+    targetUserId?: string,
+  ) {
+    const userId = await this.resolveEffectiveUserId(
+      requestingUserId,
+      targetUserId,
+    );
+
     const startDate = new Date(Date.UTC(year, month, 1));
     const endDate = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59));
 
@@ -57,7 +91,17 @@ export class AnalyticsService {
     return Object.values(grouped);
   }
 
-  async getIncomeByCategory(userId: string, month: number, year: number) {
+  async getIncomeByCategory(
+    requestingUserId: string,
+    month: number,
+    year: number,
+    targetUserId?: string,
+  ) {
+    const userId = await this.resolveEffectiveUserId(
+      requestingUserId,
+      targetUserId,
+    );
+
     const startDate = new Date(Date.UTC(year, month, 1));
     const endDate = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59));
 
@@ -107,10 +151,16 @@ export class AnalyticsService {
   }
 
   async getMonthlyTrend(
-    userId: string,
+    requestingUserId: string,
     year: number,
     type?: TransactionType,
+    targetUserId?: string,
   ) {
+    const userId = await this.resolveEffectiveUserId(
+      requestingUserId,
+      targetUserId,
+    );
+
     const months = [];
     for (let month = 0; month < 12; month++) {
       const startDate = new Date(Date.UTC(year, month, 1));
@@ -159,7 +209,16 @@ export class AnalyticsService {
     return months;
   }
 
-  async getYearlySummary(userId: string, year: number) {
+  async getYearlySummary(
+    requestingUserId: string,
+    year: number,
+    targetUserId?: string,
+  ) {
+    const userId = await this.resolveEffectiveUserId(
+      requestingUserId,
+      targetUserId,
+    );
+
     const startDate = new Date(Date.UTC(year, 0, 1));
     const endDate = new Date(Date.UTC(year, 11, 31, 23, 59, 59));
 

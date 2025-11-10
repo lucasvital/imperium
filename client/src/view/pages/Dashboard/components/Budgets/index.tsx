@@ -1,6 +1,5 @@
 import { useBudgetsController } from './useBudgetsController';
 import { BudgetCard } from './BudgetCard';
-import { Spinner } from '../../../../components/Spinner';
 import { useTranslation } from 'react-i18next';
 import { BudgetCardSkeleton } from './BudgetCardSkeleton';
 import { useDashboard } from '../../DashboardContext/useDashboard';
@@ -9,7 +8,8 @@ import { Button } from '../../../../components/Button';
 export function Budgets() {
   const { budgets, isLoading } = useBudgetsController();
   const { t } = useTranslation();
-  const { openNewBudgetModal } = useDashboard();
+  const { openNewBudgetModal, selectedMentoradoId } = useDashboard();
+  const isMentorView = Boolean(selectedMentoradoId);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-8 flex flex-col gap-4 md:gap-8 border border-gray-200 dark:border-gray-700">
@@ -19,6 +19,12 @@ export function Budgets() {
         </h2>
       </div>
 
+      {isMentorView && (
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {t('budgets.mentorViewInfo')}
+        </p>
+      )}
+
       {isLoading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -26,7 +32,7 @@ export function Budgets() {
           ))}
         </div>
       ) : budgets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12">
+        <div className="flex flex-col items-center justify-center py-12 text-center">
           <div className="w-64 h-64 mb-6 flex items-center justify-center">
             <svg
               className="w-full h-full text-gray-300 dark:text-gray-600"
@@ -47,15 +53,17 @@ export function Budgets() {
               />
             </svg>
           </div>
-          <p className="text-gray-500 dark:text-gray-400 text-center mb-4 text-lg">
+          <p className="text-gray-500 dark:text-gray-400 mb-4 text-lg">
             {t('budgets.noBudgets')}
           </p>
-          <p className="text-gray-400 dark:text-gray-500 text-center mb-6 text-sm">
+          <p className="text-gray-400 dark:text-gray-500 mb-6 text-sm">
             {t('budgets.noBudgetsDescription')}
           </p>
-          <Button onClick={openNewBudgetModal}>
-            {t('budgets.createFirstBudget')}
-          </Button>
+          {!isMentorView && (
+            <Button onClick={openNewBudgetModal}>
+              {t('budgets.createFirstBudget')}
+            </Button>
+          )}
         </div>
       ) : (
         <div className="space-y-4">

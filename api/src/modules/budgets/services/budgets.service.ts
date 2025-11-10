@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { BudgetsRepository } from 'src/shared/database/repositories/budgets.repository';
 import { CreateBudgetDto } from '../dto/create-budget.dto';
 import { UpdateBudgetDto } from '../dto/update-budget.dto';
@@ -8,6 +12,7 @@ import { TransactionsRepository } from 'src/shared/database/repositories/transac
 import { TransactionType } from '../../transactions/entities/Transaction';
 import { NotificationsRepository } from 'src/shared/database/repositories/notifications.repository';
 import { NotificationType } from '@prisma/client';
+import { UsersService } from '../../users/users.service';
 
 @Injectable()
 export class BudgetsService {
@@ -17,7 +22,30 @@ export class BudgetsService {
     private readonly validateCategoryOwnershipService: ValidateCategoryOwnershipService,
     private readonly transactionsRepo: TransactionsRepository,
     private readonly notificationsRepo: NotificationsRepository,
+    private readonly usersService: UsersService,
   ) {}
+
+  private async resolveEffectiveUserId(
+    requestingUserId: string,
+    targetUserId?: string,
+  ) {
+    if (!targetUserId || targetUserId === requestingUserId) {
+      return requestingUserId;
+    }
+
+    const canAccess = await this.usersService.canAccessUserData(
+      requestingUserId,
+      targetUserId,
+    );
+
+    if (!canAccess) {
+      throw new ForbiddenException(
+        'You do not have permission to access this user budgets.',
+      );
+    }
+
+    return targetUserId;
+  }
 
   async create(userId: string, createBudgetDto: CreateBudgetDto) {
     // Se categoryId foi fornecido, validar que a categoria pertence ao usuário
@@ -66,9 +94,15 @@ export class BudgetsService {
   }
 
   async findAllByUserId(
-    userId: string,
+    requestingUserId: string,
     filters: { month: number; year: number },
+    targetUserId?: string,
   ) {
+    const userId = await this.resolveEffectiveUserId(
+      requestingUserId,
+      targetUserId,
+    );
+
     const budgets = await this.budgetsRepo.findMany({
       where: {
         userId,

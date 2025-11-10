@@ -3,12 +3,16 @@ import { budgetsService } from '../services/budgetsService';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-export function useBudgets(month: number, year: number) {
+export function useBudgets(
+  month: number,
+  year: number,
+  targetUserId?: string,
+) {
   const { t } = useTranslation();
 
   const { data = [], isLoading } = useQuery({
-    queryKey: ['budgets', month, year],
-    queryFn: () => budgetsService.getAll({ month, year }),
+    queryKey: ['budgets', month, year, targetUserId],
+    queryFn: () => budgetsService.getAll({ month, year, targetUserId }),
   });
 
   const queryClient = useQueryClient();
@@ -60,5 +64,4 @@ export function useBudgets(month: number, year: number) {
     isRemoving,
   };
 }
-
 

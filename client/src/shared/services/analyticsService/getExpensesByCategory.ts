@@ -16,11 +16,18 @@ export interface ExpensesByCategory {
 export async function getExpensesByCategory(
   month: number,
   year: number,
+  targetUserId?: string,
 ): Promise<ExpensesByCategory[]> {
+  const params: Record<string, unknown> = { month, year };
+
+  if (targetUserId) {
+    params.targetUserId = targetUserId;
+  }
+
   const { data } = await httpClient.get<ExpensesByCategory[]>(
     '/analytics/expenses-by-category',
     {
-      params: { month, year },
+      params,
     },
   );
 

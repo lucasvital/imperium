@@ -16,6 +16,7 @@ import { BudgetsService } from './services/budgets.service';
 import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetDto } from './dto/update-budget.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
+import { OptionalParseUUIDPipe } from 'src/shared/pipes/OptionalParseUUIDPipe';
 
 @Controller('budgets')
 export class BudgetsController {
@@ -34,8 +35,13 @@ export class BudgetsController {
     @ActiveUserId() userId: string,
     @Query('month', ParseIntPipe) month: number,
     @Query('year', ParseIntPipe) year: number,
+    @Query('targetUserId', OptionalParseUUIDPipe) targetUserId?: string,
   ) {
-    return this.budgetsService.findAllByUserId(userId, { month, year });
+    return this.budgetsService.findAllByUserId(
+      userId,
+      { month, year },
+      targetUserId,
+    );
   }
 
   @Put(':budgetId')

@@ -1,14 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ExpensesByCategoryChart } from './ExpensesByCategoryChart';
 import { IncomeByCategoryChart } from './IncomeByCategoryChart';
 import { MonthlyTrendChart } from './MonthlyTrendChart';
 import { YearlySummaryCard } from './YearlySummaryCard';
 import { useDashboard } from '../../DashboardContext/useDashboard';
 import { cn } from '../../../../../shared/utils/cn';
+import { StatementView } from './StatementView';
+
+type ReportsTab = 'monthly' | 'yearly' | 'statement';
 
 export function Reports() {
-  const { t } = useDashboard();
-  const [activeTab, setActiveTab] = useState<'monthly' | 'yearly'>('monthly');
+  const { t, selectedMentoradoId } = useDashboard();
+  const [activeTab, setActiveTab] = useState<ReportsTab>(
+    selectedMentoradoId ? 'statement' : 'monthly',
+  );
+
+  useEffect(() => {
+    if (selectedMentoradoId) {
+      setActiveTab('statement');
+    }
+  }, [selectedMentoradoId]);
 
   return (
     <div className="w-full space-y-6">
@@ -17,15 +28,14 @@ export function Reports() {
           {t('reports.title')}
         </h2>
 
-        {/* Tabs */}
-        <div className="flex gap-4 mb-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-wrap gap-4 mb-6 border-b border-gray-200 dark:border-gray-700">
           <button
             onClick={() => setActiveTab('monthly')}
             className={cn(
               'pb-2 px-4 font-medium transition-colors',
               activeTab === 'monthly'
                 ? 'text-teal-900 dark:text-teal-400 border-b-2 border-teal-900 dark:border-teal-400'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200',
             )}
           >
             {t('reports.monthly')}
@@ -36,14 +46,24 @@ export function Reports() {
               'pb-2 px-4 font-medium transition-colors',
               activeTab === 'yearly'
                 ? 'text-teal-900 dark:text-teal-400 border-b-2 border-teal-900 dark:border-teal-400'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200',
             )}
           >
             {t('reports.yearly')}
           </button>
+          <button
+            onClick={() => setActiveTab('statement')}
+            className={cn(
+              'pb-2 px-4 font-medium transition-colors',
+              activeTab === 'statement'
+                ? 'text-teal-900 dark:text-teal-400 border-b-2 border-teal-900 dark:border-teal-400'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200',
+            )}
+          >
+            {t('reports.statement')}
+          </button>
         </div>
 
-        {/* Content */}
         {activeTab === 'monthly' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ExpensesByCategoryChart />
@@ -57,6 +77,8 @@ export function Reports() {
             <MonthlyTrendChart />
           </div>
         )}
+
+        {activeTab === 'statement' && <StatementView />}
       </div>
     </div>
   );
